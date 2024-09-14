@@ -1,0 +1,16 @@
+<head>
+    <script src="./node_modules/jquery/dist/jquery.js"></script>
+    <script>
+        var categories = ["All","Electronics","Footwear"];
+        $(function (){
+            $.each(categories,function (key,value){
+                $(`<li>${value}</li>`).appendTo("ol");
+            })
+        })
+    </script>
+</head>
+<body onload="bodyload()">
+<ol>
+
+</ol>
+</body>
