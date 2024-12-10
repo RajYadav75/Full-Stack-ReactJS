@@ -5071,4 +5071,3235 @@ export function ContextDemo()
 }
 
 					  Uncontrolled & Controlled Components
+- useState
+- useEffect
+- useContext
+- useRef
+
+						Controlled Components
+
+- A controlled component is manipulated by its parent.
+- The functionality, design and behaviour of component is defined from parent.
+- A controlled component will not have any individual behaviour.
+- A component can be controlled by using "Properties".
+- Properties are configured as parameters.
+
+Syntax:
+	function  Component(props)
+	{
+		return (<div> </div>);
+	}
+
+- "props" is an object type with key and value reference.
+- Every key is designated as property of component
+
+		props.title
+		props.items
+		props.src
+
+	<Component   title=" "   items={ [ ] }  src=" " />
+
+- Property value type can be Primitive or Non Primitive.
+- Key is a dynamic type, which is resolved at runtime of application. 
+- Every property is not a required property, mostly string type are optional. 
+
+Ex:
+1. Add a new folder  "custom-components"
+
+2. Add a new file  "navbar.jsx"  
+
+export function NavBar(props)
+{
+    return(
+        <nav className={`d-flex justify-content-between p-3 m-2 border border-1 ${props.theme}`}>
+            <div className="fw-bold fs-4"> <img src={props.logo} width="30" height="30" /> {props.title}</div>
+            <div className="fs-5">
+                {
+                    props.menuItems.map(item=> <span key={item} className="mx-3"><a>{item}</a></span> )
+                }
+            </div>
+            <div>
+                <button className="btn btn-warning bi bi-person-circle"> Signin </button>
+            </div>
+        </nav>
+    )
+}
+
+3. Controlled-Demo.jsx
+
+import { NavBar } from "../../custom-components/navbar";
+
+export function ControlledDemo(){
+    return(
+        <div className="container-fluid">
+            <h2>Controlled Demo</h2>
+            <NavBar theme="bg-dark text-white" title="Shopper." menuItems={['Home', 'Shop', 'Products', 'Docs']} logo="logo192.png" />
+            <NavBar theme="bg-danger text-white" title="NareshIT" menuItems={['Home', 'Courses', 'New Batches']} logo="m1.jpg" />
+        </div>
+    )
+}
+
+FAQ: How to transport data from parent to child component?
+Ans:  a) By using Context
+	  b) By using Properties
+
+FAQ: When to use context?
+Ans: Context is required when the child component is  uncontrolled component.
+         Props are required when child component is controlled component.
+
+Ex:
+user-control.jsx
+
+
+
+export function UserControl(props){
+    return(
+        <div>
+            <label className="form-label fw-bold">{props.label}</label> 
+            <div>
+                <input type={props.type} className="form-control" />
+            </div>
+        </div>
+    )
+}
+
+
+	   <div className="w-25">
+                <UserControl label="Departure" type="date" />
+                <UserControl label="Your Photo" type="file" />
+                <UserControl label="Fav Color" type="color" />
+            </div>
+
+Ex:
+grid.jsx
+
+
+
+export function Grid(props){
+    return(
+        <div className="container-fluid">
+            <table className="table table-hover">
+                <thead>
+                    <tr>
+                        {
+                            props.fields.map(field=><th  key={field}>{field} <span className="dropdown"><button data-bs-toggle="dropdown" className="bi bi-three-dots-vertical btn"> <ul className="dropdown-menu"><li className="dropdown-item"> <span className="bi bi-sort-alpha-down"> Sort Ascending</span> </li> <li className="dropdown-item"><span className="bi bi-sort-alpha-up">Sort Descending</span></li> </ul> </button></span> </th>)
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        props.data.map(item=>
+                            <tr key={item}>
+                                {
+                                    Object.keys(item).map(key => <td key={key}> {item[key]} </td> )
+                                }
+                            </tr>
+                        )
+                    }
+                </tbody>
+            </table>
+        </div>
+    )
+}
+
+
+
+controlled-demo.jsx
+
+import { Grid } from "../../custom-components/grid";
+import { NavBar } from "../../custom-components/navbar";
+import { UserControl } from "../../custom-components/user-control";
+
+export function ControlledDemo(){
+    return(
+        <div className="container-fluid">
+            <h2>Products</h2>
+            <Grid  fields={['Name', 'Price', 'Stock']} data={[{Name:'TV', Price:24000.44, Stock:'Available'}, {Name:'Mobile', Price:12300.44, Stock:'Out of Stock'}]} />
+            <h2>Employee</h2>
+            <Grid  fields={['First Name', 'Designation']} data={[{FirstName:'John', Designation:'Manager'}]} />
+        </div>
+    )
+}
+
+					       Conditional Rendering
+
+					   Conditional Rendering
+- Conditional rendering is the process of rendering different content according to state and situation. 
+- A component can render different JSX elements according to situation. 
+
+Syntax:
+	(condition) ? <component1 /> : <component2 />
+
+Ex: Conditional Rendering in Uncontrolled component
+
+conditional-rendering.jsx
+
+import { useEffect, useState } from "react"
+
+export function ConditionalRendering(){
+
+    const [signedIn, setSignedIn] = useState(false);
+
+  
+    function handleSignIn(){
+        setSignedIn(true);
+    }
+    function handleSignout(){
+        setSignedIn(false);
+    }
+
+    return(
+        <div className="container-fluid">
+            <nav className="d-flex justify-content-between p-2 mt-3">
+                <div className="fs-5 fw-bold">Shopper.</div>
+                 {
+                    (signedIn===true)? <div className="fs-5">
+                    <span className="mx-3">Home</span>
+                    <span className="mx-3">Shop</span>
+                    <span className="mx-3">Pages</span>
+                    <span className="mx-3">Blog</span>
+                    </div>
+                    : <div></div>
+                 }
+                <div>
+                    {
+                        (signedIn===true)?<button onClick={handleSignout} className="btn btn-danger">Signout</button>:<button className="btn btn-primary" onClick={handleSignIn}>Signin</button>
+                    }
+                </div>
+            </nav>
+        </div>
+    )
+}
+
+Ex: Conditional rendering in controlled component
+
+	function Component(props)
+	{
+	    if(props.key===value)
+	    {
+		return ( <JSX> </JSX>);
+	    }
+	   else {
+		return (<JSX> </JSX>);
+	   }
+	}
+
+1. Go to custom-components and add 
+
+		data-grid.jsx
+
+export function DataGrid(props){
+    if(props.layout==="grid"){
+        return(
+            <div>
+                <table className="table table-hover">
+                    <thead>
+                        <tr>
+                            {
+                                props.fields.map(field=><th key={field}>{field}</th>)
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            props.data.map(item=>
+                                <tr key={item}>
+                                    {
+                                        Object.keys(item).map(key=> <td key={key}>{item[key]}</td>)
+                                    }
+                                </tr>
+                            )
+                        }
+                    </tbody>
+                </table>
+            </div>
+        )
+    } else if(props.layout==="card") {
+        return (
+            <div className="d-flex flex-wrap">
+                {
+                    props.data.map(item=>
+                        <div className="card m-2 p-2" style={{width:'200px'}} key={item}>
+                            <div className="card-header">
+                                {item[Object.keys(item)[0]]}
+                            </div>
+                            <div className="card-body">
+                              <dl>
+                                <dt>{Object.keys(item)[1]}</dt>
+                                <dd>{item[Object.keys(item)[1]]}</dd>
+                              </dl>
+                            </div>
+                            <div className="card-footer">
+                                <button className="btn btn-warning bi bi-cart4 w-100"> Buy </button>
+                            </div>
+                        </div>
+                    )
+                }
+            </div>
+        )
+    } else {
+        return (
+            <div>
+                <h3>Please Select a Layout</h3>
+            </div>
+        )
+    }
+}
+
+2. conditional-rendering.jsx
+
+import { useEffect, useState } from "react"
+import { DataGrid } from "../../custom-components/data-grid";
+
+
+export function ConditionalRendering(){
+
+    const [signedIn, setSignedIn] = useState(false);
+    const [layout, setLayout] = useState('');
+
+  
+    function handleSignIn(){
+        setSignedIn(true);
+    }
+    function handleSignout(){
+        setSignedIn(false);
+    }
+
+    function handleLayoutChange(e){
+        setLayout(e.target.value);
+    }
+
+    return(
+        <div className="container-fluid">
+            <nav className="d-flex justify-content-between p-2 mt-3">
+                <div className="fs-5 fw-bold">Shopper.</div>
+                 {
+                    (signedIn===true)? <div className="fs-5">
+                    <span className="mx-3">Home</span>
+                    <span className="mx-3">Shop</span>
+                    <span className="mx-3">Pages</span>
+                    <span className="mx-3">Blog</span>
+                    </div>
+                    : <div></div>
+                 }
+                <div>
+                    {
+                        (signedIn===true)?<button onClick={handleSignout} className="btn btn-danger">Signout</button>:<button className="btn btn-primary" onClick={handleSignIn}>Signin</button>
+                    }
+                </div>
+            </nav>
+            <section className="mt-4">
+                <div className="my-2">
+                    <select onChange={handleLayoutChange} className="form-select w-25" >
+                        <option>Select Layout</option>
+                        <option value="grid">Grid</option>
+                        <option value="card">Card</option>
+                    </select>
+                </div>
+                <DataGrid layout={layout} fields={["Name", "Price"]} data={[{Name:"Samsung TV", Price: 45000.44}, {Name:"Mobile", Price:13000.44}]} />
+            </section>
+        </div>
+    )
+}
+
+							useReducer()
+- It maintains a global state.
+- Global state is referred as "Application State".
+- Usually application contains data from application start to application end.
+- Data in application state is accessible to all sessions. 
+- Application state is global and requires features for developer like
+	a) Predictable 
+	b) Extensible 
+	c) Debuggable 
+	e) Centralized 
+	f) Cross platform
+- At large scale these features are supported by a JavaScript library called "Redux".
+- Application State is managed by using following components
+
+	a) Store
+	b) State
+	c) Reducer 
+
+- Store is a location where the data is kept. It is a global location for application.
+- State is a component used to access the data from store provide to UI. 
+- Reducer comprises of actions that identify the changes in UI and update to store.
+Configuring Global State
+
+1. Create a store as initialState 
+
+	 let   initialState =  { count : 0 }
+
+
+2. Create a reducer function with state and actions  
+
+	function reducer(state, action)
+	{
+		// write logic for action type and 
+		   data to update
+	}
+
+3. Configure reducer in component
+
+	const [state, dispatch] = useReducer(reducer, initialState);
+
+	=> state collects payload [data] from store and updates into store.
+	=> dispatch defines the action type configured in reducer. 
+
+Syntax:
+	   function handleEvent()
+	   {
+		dispatch({type: 'Add'});
+	   }
+
+
+Ex:
+reducer-demo.jsx
+
+import { useReducer } from "react";
+
+let initialState = {wishList: 0};
+
+function reducer(state, action){
+    switch(action.type){
+        case "addToWhishList": 
+        return {wishList: state.wishList + 1};
+        case "removeFromWhishList":
+        return {wishList: state.wishList - 1};
+    }
+}
+
+export function ReducerDemo(){
+
+    const [state, dispatch ] = useReducer(reducer, initialState);
+
+    function handleWishListClick(){
+        dispatch({type:'addToWhishList'});
+    }
+    function handleRemoveWhishList(){
+        dispatch({type:'removeFromWhishList'});
+    }
+
+    return(
+        <div>
+            <h3>Shopping</h3>
+            <button className="btn btn-warning bi bi-heart" style={{position:'fixed', top:'50px', right:'50px'}}>
+                <span className="badge bg-danger position-absolute rounded rounded-circle"> {state.wishList}</span>
+            </button>
+            <div className="card" style={{width:'250px'}}>
+                <img src="iphone-black.jpg"  className="card-img-top" height="200"/>
+                <div className="card-header">
+                    <div>iPhone 14 (Black) 128 GB</div>
+                </div>
+                <div className="card-footer">
+                    <button onClick={handleWishListClick} className="btn btn-success bi bi-heart"></button>
+                    <button className="btn btn-warning bi bi-cart4 ms-2"></button>
+                    <button onClick={handleRemoveWhishList} className="btn btn-danger bi ms-2 bi-trash">Whishlist</button>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+FAQ: What are the browser storages?
+Ans:
+	a) local storage
+	b) session storage
+	c) cookies
+
+Session Storage:
+- It is temporary storage of browser.
+- It is accessible only from current tab.
+- It not available across tabs.
+- It is deleted automatically when browser is closed. 
+
+	sessionStorage.setItem("key", value);
+	sessionStorage.getItem("key");
+	sessionStorage.removeItem("key");
+
+
+LocalStorage:
+- It is permanent storage.
+- It is available for access even after browser is closed.
+- It is accessible across tabs.
+- It is removed explicitly.
+
+	localStorage.setItem()
+	localStorage.getItem()
+	localStorage.removeItem()
+
+Ex: 
+storage-demo.jsx
+
+import { useEffect, useState } from "react"
+
+
+export function StorageDemo(){
+
+    const [user, setUser] = useState('');
+
+    function handleIdChange(e){
+        setUser(e.target.value);
+    }
+    function removeSession(){
+        alert('Your session expired');
+        sessionStorage.removeItem('userid');
+        window.location.reload();
+    }
+
+    useEffect(()=>{
+        setTimeout(removeSession, 10000);
+    },[])
+
+    function handleLogin(){
+        sessionStorage.setItem("userid", user);
+        alert('Your ID Saved');
+        setTimeout(removeSession, 10000);
+    }
+
+    return(
+        <div>
+            <h2>Storage</h2>
+            <input type="text" onChange={handleIdChange} placeholder="UserId" /> 
+            <button onClick={handleLogin} >Login</button>
+            <p className="fw-bold mt-4">{sessionStorage.getItem('userid')} logged in</p>
+        </div>
+    )
+}
+
+						   Class Components 
+
+						JavaScript Classes 
+- Programming technologies use various types systems in real world application development.
+	a) POPS
+	b) OBPS
+	c) OOPS
+
+POPS
+- Process Oriented Programming System
+- It supports low level features.
+- It can directly interact hardware services.
+- It uses less memory.
+- It is faster in interactions.
+
+Ex: C, Pascal
+
+- Reusability issues 
+- Extensibility issues
+- Dynamic memory problems 
+
+OBPS
+- Object Based Programming System
+- Supports reusability, extensibility [limited], dynamic memory
+
+Ex: JavaScript, VB
+
+- No dynamic polymorphism
+- No code level security
+
+
+OOPS
+- Object Oriented Programming System
+- Reusability
+- Extensibility
+- Code Level Security
+- Dynamic Polymorphism 
+
+Ex: C++, Java, C#
+
+- Don't support low level features
+- Can't directly interact with hardware services.
+- Need more memory.
+- Slow in interactions. 
+- It is tedious.
+
+Note: JavaScript is not an OOP language, it supports few features of OOP.
+
+What is a Class?
+- Class is a program template. 
+- A template provides pre-defined data and logic, which you can implement and customize according to requirements. 
+- Class have various behaviours like "Entity" & "Modal".
+- If a class is designed for business requirements then it is known as "Entity".
+- If a class is designed for data requirements then it is known as "Modal".
+- It is often known as a blue print for creating multiple instances. 
+
+How a class is configured?
+- You can configure class using 2 techniques 
+	
+	a) Class Declaration
+	b) Class Expression
+
+Syntax: Declaration
+
+	class  Product
+	{
+	}
+
+Syntax: Expression
+
+	var Product = class {
+
+	}
+
+What are class members?
+- Class is a template.
+- Its members must be mutable. 
+- JavaScript class member can be any one of the following
+	a) Property
+	b) Accessor
+	c) Constructor 
+	d) Method
+
+FAQ: Can we have a variable as class member?
+Ans: No. 
+
+FAQ: Can we have variable in class?
+Ans: Yes.
+
+FAQ: Why we can't have a variable as class member?
+Ans: Variables are immutable. And class can have only mutable member.
+
+						     Property
+- A property is mutable.
+- It is used to store data for class. 
+- It can store any type of data
+	a) Primitive
+	b) Non Primitive 
+
+Syntax:
+	class Name
+	{
+	  Property = number/string/Boolean/array/object/date etc..;
+	}
+
+- You can access class member with in class by using "this" keyword. 
+- You can access class member outside class by using instance of class.
+
+	let  obj = new ClassName();
+	obj.Property
+
+Ex:
+<script>
+    class Demo 
+    {
+        Name = "Samsung TV";
+        Price = 45000;
+        Stock = true;
+        Cities = ["Delhi", "Hyd"];
+        Rating = {Rate: 3.5}
+    }
+    let obj = new Demo();
+    document.write(`${obj.Name}<br>${obj.Price}`);
+</script>
+
+						Accessors
+- Accessors give a fine grained control over property. 
+- They can handle read-write operations on property.
+- Accessors are of 2 types
+
+		a) get()		getter
+		b) set()		setter
+
+- getter is used to read and return value of a property.
+- setter is used to store a new value into property.
+
+Syntax:
+		get  aliasName()
+		{
+		  return  Property_Value;
+		}
+
+		set  aliasName(newValue)
+		{
+			Property = newValue;
+		}
+
+Ex:
+<script>
+    var username = prompt("Enter Name");
+    var role = prompt("Enter Your Role", "admin|customer");
+    class Product
+    {
+        _productName;
+
+        get ProductName(){
+            return this._productName;
+        }
+
+        set ProductName(newName) {
+            if(role==="admin"){
+                this._productName = newName;
+            } else {
+                document.write(`Hello ! ${username} you are not authorized to set product name`);
+            }
+        }
+    }
+
+    let obj = new Product();
+    obj.ProductName = prompt("Enter Product Name");
+    if(obj.ProductName)
+    {
+        document.write(`Product Name : ${obj.ProductName}`);
+    }
+</script>
+JavaScript Classes 
+- Class Declaration
+- Class Expression
+- Class Members
+- Property
+- Accessors
+
+			     Methods
+- A method defines actions to perform.
+- Class will not allow function as class member.
+- Function is immutable.
+- The actions in class are defined by using method.
+
+Syntax:
+	class  Name
+	{
+	   method(){ 
+	   }
+	}
+
+- Method can be void or can return a value. 
+- It is similar to a function with all functional features like
+	- Closure
+	- Parameters
+	- Spread & Rest etc..
+
+Ex:
+<script>
+    class Product
+    {
+       
+        Name = "Samsung TV";
+        Price = 45000.44;
+        Qty = 1;
+        Total(){
+            return this.Qty * this.Price;
+        }
+        Print(){
+            document.write(`Name=${this.Name}<br>Price=${this.Price}<br>Qty=${this.Qty}<br>Total=${this.Total()}`);
+        }
+    }
+    let obj = new Product();
+    obj.Print();
+</script>
+
+
+FAQ: What is difference between function and method?
+Ans:  Function is intended to return a value.
+         Method is always a void type.
+         However in JavaScript function and method have similar behaviour. 
+         Function is immutable and method is mutable.
+
+Note: Function is a not allowed as class member.  But a class can have function.
+
+
+			  Constructor
+- Constructor is a special type of sub-routine in class.
+- It is responsible for instantiation. [Creating object for class]
+- Constructor is a design pattern, that defines how an object can be created for class.
+- Every class have an implicit constructor. 
+- JavaScript class can have explicit constructor to define actions that are performed while creating object for class.
+- JS constructor is anonymous and defined with "constructor" keyword.
+
+Syntax:
+	class  Name
+	{
+	   constructor(){
+	    }
+	}
+
+- Constructor executes automatically for every object.
+- Constructor can be parameterized or parameter less. 
+- If it is parameterized then the values are passed at the time of allocating memory for class.
+
+Syntax:
+	class Name
+	{
+	   constructor(param)
+                     {
+	    }
+	}
+
+	let obj = new Name(value);
+
+Ex:
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        class Database
+        {
+            constructor(dbName){
+                document.write(`Connected to ${dbName} <br>`);
+            }
+            Insert(){
+                document.write("Record Inserted");
+            }
+            Update(){
+                document.write("Record Updated Successfully..");
+            }
+        }
+        function InsertClick(){
+            let obj = new Database(document.querySelector("select").value);
+            obj.Insert();
+        }
+        function UpdateClick(){
+            let obj = new Database(document.querySelector("select").value);
+            obj.Update();
+        }
+    </script>
+</head>
+<body>
+    <select>
+        <option>Select Database</option>
+        <option>Oracle</option>
+        <option>MySql</option>
+        <option>MongoDB</option>
+    </select>
+    <button onclick="InsertClick()">Insert</button>
+    <button onclick="UpdateClick()">Update</button>
+</body>
+</html>
+
+
+Summary:
+- Property
+- Accessor
+- Method
+- Constructor 
+
+		        Code Reusability & Extensibility 
+- OOP support 2 techniques to handle resuability an extensibility
+
+	1. Aggregation 
+	2. Inheritance 
+
+Aggregation:
+- It is a technique of accessing members of one class in another without configuring any relation between classes. 
+- It is referred as "Object-to-Object" communication.
+- It is known as "Has-A-Relation".
+
+Ex:
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        class HDFC_Bank_Version1
+        {
+            Personal = "Personal Banking Services<br>";
+            Print(){
+                document.write(this.Personal);
+            }
+        }
+        class HDFC_Bank_Version2 
+        {
+            NRI = "NRI Banking Services<br>";
+            Print(){
+                let obj = new HDFC_Bank_Version1();
+                obj.Print();
+                document.write(this.NRI);
+            }
+        }
+        class HDFC_Bank_Version3 
+        {
+            Loans = "Housing Loan, Personal Loan<br>";
+            Print(){
+                let obj = new HDFC_Bank_Version2();
+                obj.Print();
+                document.write(this.Loans);
+            }
+        }
+        function InstallClick(){
+            var ver = document.querySelector("select").value;
+
+            switch(ver){
+                case "ver1": 
+                document.write(`<h2>Version 1 Installed </h2>`);
+                let obj1 = new HDFC_Bank_Version1();
+                obj1.Print();
+                break;
+                case "ver2": 
+                document.write(`<h2>Version 2 Installed </h2>`);
+                let obj2 = new HDFC_Bank_Version2();
+                obj2.Print();
+                break;
+                case "ver3": 
+                document.write(`<h2>Version 3 Installed </h2>`);
+                let obj3 = new HDFC_Bank_Version3();
+                obj3.Print();
+                break;
+                default: 
+                document.write("Please select a version");
+            }
+        }
+    </script>
+</head>
+<body>
+    <select>
+        <option>Select Version</option>
+        <option value="ver1">Version-1 [2022]</option>
+        <option value="ver2">Version-2 [2023]</option>
+        <option value="ver3">Version-3 [Latest]</option>
+    </select>
+    <button onclick="InstallClick()">Install</button>
+</body>
+</html>
+
+
+Inheritance: 
+- It is the process of configuring relation between classes in order to access members of one class in another.
+- Existing class is known as "Super" class.
+- Extended class is known as "Derived" class.
+- Accessing with relation is often called as "Is-A-Relation".
+
+Syntax:
+	class  Super
+	{
+	}
+	class Derived extends Super
+	{
+	}
+
+- Derived class can access super class members by using "super" keyword.
+
+Ex:
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        class HDFC_Bank_Version1
+        {
+            Personal = "Personal Banking Services<br>";
+            Print(){
+                document.write(this.Personal);
+            }
+        }
+        class HDFC_Bank_Version2 extends HDFC_Bank_Version1
+        {
+            NRI = "NRI Banking Services<br>";
+            Print(){
+                super.Print();
+                document.write(this.NRI);
+            }
+        }
+        class HDFC_Bank_Version3 extends HDFC_Bank_Version2
+        {
+            Loans = "Housing Loan, Personal Loan<br>";
+            Print(){
+                super.Print();
+                document.write(this.Loans);
+            }
+        }
+        function InstallClick(){
+            var ver = document.querySelector("select").value;
+
+            switch(ver){
+                case "ver1": 
+                document.write(`<h2>Version 1 Installed </h2>`);
+                let obj1 = new HDFC_Bank_Version1();
+                obj1.Print();
+                break;
+                case "ver2": 
+                document.write(`<h2>Version 2 Installed </h2>`);
+                let obj2 = new HDFC_Bank_Version2();
+                obj2.Print();
+                break;
+                case "ver3": 
+                document.write(`<h2>Version 3 Installed </h2>`);
+                let obj3 = new HDFC_Bank_Version3();
+                obj3.Print();
+                break;
+                default: 
+                document.write("Please select a version");
+            }
+        }
+    </script>
+</head>
+<body>
+    <select>
+        <option>Select Version</option>
+        <option value="ver1">Version-1 [2022]</option>
+        <option value="ver2">Version-2 [2023]</option>
+        <option value="ver3">Version-3 [Latest]</option>
+    </select>
+    <button onclick="InstallClick()">Install</button>
+</body>
+</html>
+
+- Inhertiance rule for constructor in JS is to access and call super class constructor in derived class.
+
+Ex:
+<script>
+    class Super
+    {
+        constructor(){
+            document.write("Super Class Constructor<br>");
+        }
+    }
+    class Derived extends Super 
+    {
+        constructor(){
+            super();
+            document.write("Derived Class Constructor");
+        }
+    }
+    let obj = new Derived();
+</script>
+
+		              Polymorphism
+
+			Polymorphism
+- Poly means "Many".
+- Morphos means "Forms".
+- A single base class object can use the memory of multiple derived classes. 
+
+Syntax:
+        var baseObject = new Array(new Super1(), new Super2());
+
+Ex:
+<script>
+   class Employee
+   {
+       FirstName;
+       LastName;
+       Designation;
+       Print(){
+          document.write(`${this.FirstName} ${this.LastName} - ${this.Designation}<br>`);
+       }
+   }
+   class Developer extends Employee
+   {
+       FirstName = "Rajesh";
+       LastName = "Kumar";
+       Designation = "Developer";
+       Role = "Developer Role : Build, Debug, Test";
+       Print(){
+         super.Print();
+         document.write(this.Role);
+       }
+   }
+   class Admin extends Employee
+   {
+       FirstName = "Kiran";
+       LastName = "Kumar";
+       Designation = "Admin";
+       Role = "Admin Role : Authorizations";
+       Print(){
+         super.Print();
+         document.write(this.Role);
+       }
+   }
+   class Manager extends Employee
+   {
+       FirstName = "Tom";
+       LastName = "Hanks";
+       Designation = "Manager";
+       Role = "Manager Role : Approvals";
+       Print(){
+         super.Print();
+         document.write(this.Role);
+       }
+   }
+
+   let employees = new Array(new Developer(), new Admin(), new Manager());
+
+   var designation = prompt("Enter Designation");
+
+   for(var employee of employees){
+      if(employee.Designation===designation){
+          employee.Print();
+      }
+   }
+
+
+</script>
+
+		           React Class Components
+
+1. React class component is a JavaScript class that extends
+	a) React.Component
+	b) React.PureComponent
+
+2. Component & PureComponent are super classes that provide component behaviour. 
+
+	export   class  Login extends React.Component | React.PureComponent
+	{
+
+	}
+
+  - React.Component mounts complete component when ever any change occurred
+    in component.
+  - React.PureComponent updates only the changes without mounting the complete
+    component.
+
+3. React class component must have a constructor that calls the super constructor.
+
+            export  class  Login extends  React.Component
+             {
+	 constructor(){
+	    super();
+	 }
+             }
+
+
+4. Class component returns JSX by using "render()" method. It is a built-in method
+    of React.Component class
+
+
+	{
+	    render() {
+	         return( <JSX> </JSX>);
+	    }
+	}
+
+Ex:
+import React from "react";
+
+export class RegisterUser extends React.Component
+{
+     constructor(){
+        super();
+     }
+     render(){
+        return(
+            <div>
+                <h3>Register User</h3>
+            </div>
+        )
+     }
+}
+
+Data Binding in Class Component
+- You can configure data in property.
+- Property in class component is immutable. 
+- You can use the binding expression "{  }" to bind data with UI elements.
+
+Syntax:
+	{
+	  UserName = "John";
+	}
+
+	<p>  { this.UserName } </p>
+
+- It is not recommended to property for storing data.
+
+State in Class Component:
+
+- Class components are statefull components.
+- A class component have implicit state.
+- You can't use hooks in class component.
+- You have to configure implicit state with data.
+- State must be configured while creating object for component.
+- You can access the state by using "this.state"
+- "this.state" is an object type
+
+Syntax:
+	constructor()
+	{
+                    super();
+	   this.state = {
+	          key : value,
+	          key : value
+	   }
+	}
+
+	<p> { this.state.key } </p>
+
+- You can store any type of data in state.
+- Class component can have only one state configuration.
+- Every state can have multiple keys with various types of values.
+
+Ex:
+import React from "react";
+
+
+export class RegisterUser extends React.Component
+{
+     constructor(){
+        super();
+        this.state = {
+            UserName: "David",
+            Categories: ["All", "Electronics", "Fashion"]
+        }
+     }
+     
+     render(){
+        return(
+            <div className="container-fluid">
+                <h3>Hello ! {this.state.UserName}</h3>
+                <select>
+                    {
+                        this.state.Categories.map(category=><option key={category}>{category}</option>)
+                    }
+                </select>
+            </div>
+        )
+     }
+}
+
+- You can set state by using "setState" method of class component. 
+- It is recommended to setState while mounting or on any specific event.
+- The mount phase for class component is defined by using the methods
+
+	a) componentWillMount()
+	b) componentDidMount()
+
+Syntax:
+
+	componentDidMount() {
+	
+	       this.setState({ Key:value })		
+	
+	}
+
+Ex:
+import React from "react";
+
+
+export class RegisterUser extends React.Component
+{
+     constructor(){
+        super();
+        this.state = {
+           UserName: "",
+           Price: 0,
+           Stock: false
+        }
+        
+     }
+     
+     componentDidMount(){
+        this.setState({UserName: "David", Price:65700, Stock:true});
+     }
+     
+
+     render(){
+        return(
+            <div className="container-fluid">
+                <h2>Hello ! { this.state.UserName }</h2>
+                <p>
+                    Price : {this.state.Price} <br /> 
+                    Stock : {(this.state.Stock===true)?"Available":"Out of Stock"}
+                </p>
+            </div>
+        )
+     }
+}
+
+Class & Style Binding
+- Style and Class Binding are same as you defined into function components.
+
+Syntax:
+	<div style={ {height:'200px' } }> </div>
+
+	<div className={ `border ${this.state.theme}` }>  </div>
+
+EX:
+import React from "react";
+
+
+export class RegisterUser extends React.Component
+{
+     constructor(){
+        super();
+        this.state = {
+           UserName: "",
+           Price: 0,
+           Stock: false,
+           theme: 'bg-light'
+        }
+        
+     }
+     
+     componentDidMount(){
+        this.setState({UserName: "David", Price:65700, Stock:true, theme:'bg-danger text-white'});
+     }
+     
+
+     render(){
+        return(
+            <div className="container-fluid">
+                <div className={`border p-2 border-2 w-25 mt-2 ${this.state.theme}`}>
+                    <h2>Hello ! { this.state.UserName }</h2>
+                    <p>
+                        Price : {this.state.Price} <br /> 
+                        Stock : {(this.state.Stock===true)?"Available":"Out of Stock"}
+                    </p>
+                </div>
+            </div>
+        )
+     }
+}
+
+		            Event Binding in Class
+- All events are same as function components.
+- It uses SyntheticEvent base.
+- Event will point towards a method.
+
+	class
+	{
+	  handleClick() {
+
+	  }
+	}
+
+	<button onClick={this.handleClick}> Submit </button>
+React Class Components
+- Define component 
+- Extend PureComponent , Component
+- Render method
+- State in class
+- Data Binding
+- Style Binding
+- Class Binding
+- Event Binding
+
+		         Binding methods to use State
+- State is configure at the time of creating component.
+- Methods are generated after mounting the component.
+- Hence state can't register the methods defined in components.
+- It will not allow the methods to use state. 
+- You have to bind the methods to current class memory while creating component object. So that they can use the state configured at the time of creating component.
+
+Syntax:
+	constructor()
+	{
+	     this.handleClick = this.handleClick.bind(this);
+	}
+
+	handleClick()
+	{
+	}
+
+	<button onClick={this.handleClick}>
+
+Ex:
+import React from "react";
+
+export class RegisterUser extends React.Component
+{
+     constructor(){
+        super();
+        this.state = {
+            msg: ""
+        }
+       this.handleInsertClick = this.handleInsertClick.bind(this);
+     }
+
+     handleInsertClick(){
+      this.setState({msg: "Record Inserted"});
+     }
+
+     render(){
+        return(
+            <div className="container-fluid">
+                <button onClick={this.handleInsertClick}>Insert</button>
+                <p>{this.state.msg}</p>
+            </div>
+        )
+     }
+}
+
+- Registering and binding an method while creating component refers to eager loading.
+- You can implement lazy loading by using bind() method at the event handler. 
+
+Syntax:
+
+  <button  onClick={this.handleClick.bind(this)}>  
+
+FAQ: Can we use class memory without "bind()" method?
+Ans: Yes. If you can keep the method memory alive after the execution, then
+         it can make use of class memory.
+
+Syntax:
+      <button onClick={ ()=> this.handleClick() }> 
+
+- Class component event arguments are same as in function component.
+
+Syntax:
+	handleClick(e)
+	{
+	  e.clientX;
+	  e.keyCode;
+	  e.target.id;
+	  e.target.className;
+	}
+
+- All SyntheticEvents are same
+
+	a) Keyboard Events
+	b) Button Events
+	c) Element State Events
+	d) Touch Events
+	etc.. 
+
+Ex:
+import React from "react";
+
+export class RegisterUser extends React.Component
+{
+     constructor(){
+        super();
+        this.state = {
+            msg: ""
+        }
+       this.handleInsertClick = this.handleInsertClick.bind(this);
+     }
+
+     handleInsertClick(e){
+      console.log(`${e.target.id}\n${e.target.value}\n${e.clientX}`);
+      this.setState({msg: "Record Inserted"});
+     }
+
+     handleDeleteClick(){
+       this.setState({msg: "Record Deleted Successfully.."});
+     }
+
+     handleUpdateClick(){
+        this.setState({msg: "Record Updated.."});
+     }
+
+     render(){
+        return(
+            <div className="container-fluid">
+                <button id="btnInsert" value="Insert" onClick={this.handleInsertClick}>Insert</button>
+                <button onClick={this.handleDeleteClick.bind(this)} >Delete</button>
+                <button onClick={()=> this.handleUpdateClick()}>Update</button>
+                <p>{this.state.msg}</p>
+            </div>
+        )
+     }
+}
+
+		  Properties in Class Component
+- Controlled components use properties.
+- Parent component controls the child component by passing values into the 
+  properties.
+- Class component have built-in properties object. You can use to configure properties.
+- You can access the properties by using "this.props".
+- It is an object type with key-value collection.
+
+	this.props.key
+
+	<component  key={value} />
+
+Ex:
+vertical-nav-bar.jsx
+
+import React from "react";
+
+
+export class VerticalNavbar extends React.Component
+{
+     constructor(){
+        super();
+     }
+     render(){
+        return(
+            <div className="container-fluid">
+                <nav style={{width:'150px'}} className="border p-4 border-2 border-dark">
+                    <div className="h4">{this.props.title}</div>
+                    <ul className="list-unstyled">
+                        {
+                            this.props.items.map(item=> <li className="bg-dark text-white p-2 my-3 rounded" key={item}>{item}</li>)
+                        }
+                    </ul>
+                </nav>
+            </div>
+        )
+     }
+}
+
+
+register-user.jsx
+
+import React from "react";
+import { VerticalNavbar } from "../vertical-nav-bar/vertical-nav-bar";
+
+export class RegisterUser extends React.Component
+{
+     constructor(){
+        super();
+        this.state = {
+            msg: ""
+        }
+       this.handleInsertClick = this.handleInsertClick.bind(this);
+     }
+
+     handleInsertClick(e){
+      console.log(`${e.target.id}\n${e.target.value}\n${e.clientX}`);
+      this.setState({msg: "Record Inserted"});
+     }
+
+     handleDeleteClick(){
+       this.setState({msg: "Record Deleted Successfully.."});
+     }
+
+     handleUpdateClick(){
+        this.setState({msg: "Record Updated.."});
+     }
+
+     render(){
+        return(
+            <div className="container-fluid">
+                <VerticalNavbar title="Shopper" items={["Home", "Shop", "Pages", "Blog"]} />
+                <button id="btnInsert" value="Insert" onClick={this.handleInsertClick}>Insert</button>
+                <button onClick={this.handleDeleteClick.bind(this)} >Delete</button>
+                <button onClick={()=> this.handleUpdateClick()}>Update</button>
+                <p>{this.state.msg}</p>
+            </div>
+        )
+     }
+}
+
+
+			Forms & Validations
+
+Routing in React
+- BrowserRouter
+- Routes
+- Route
+- Link
+- react-router-dom
+
+		             Route Parameters
+- A route is used to access any specific resource. 
+- A route parameter allows to query any content in side the resource. 
+- React application can configure a route parameter in side route path.
+
+	<Route  path="name/:param1/:param2/.."   element={ } />
+
+- The values are passed using "/" as delimeter in URL.
+
+	http://localhost:3000/name/value1/value2
+
+- Every route parameter is mandatory and have order dependency. 
+
+- You can access the route parameters by using "useParams()"  hook. It returns an parameter object with key and value.
+
+	let  params = useParams();
+	
+	params {
+	     param1: value1,
+	     param2: value2
+	}
+
+FAQ: What is difference between "Absolute & Relative" path?
+Ans:  Asbolute path refers to a resource on server. 
+         Relative path refers to any specific content inside resource. 
+
+	http://localhost:3000/products
+
+	<Link  to="electronics"> 	=> Relative Path
+
+	http://localhost:3000/products/electronics
+
+	<Link to="home">
+
+	http://localhost:3000/products/home
+
+	<Link to="/home">		=> Absolute
+
+	http://localhost:3000/home
+
+
+			 Child Routes
+- A child route refers to relative path.
+- Relative is with regard to the parent path.
+- You can configure route to access child component within the parent.
+
+Syntax:
+	<Route  path="parent"  element={<ParentElement />}>
+		
+	         <Route path="child"  element={<ChildElement />} />
+	         ... multiple children.... 
+
+	</Route>
+
+- The child route is responsible for rendering a child component into the parent.
+- It requires an <Outlet /> to configure.
+- <Outlet> is a component that defines where the resulting markup of child is going to
+   render.
+
+FAQ: Can we define multiple outlets?
+Ans: Yes.
+
+Route Parameters
+Nested Routes
+
+		               Authenticating Routes
+- Authorization is the process of preventing access to resources in application.
+- Authentication is the process of verifying user credentials like userid, password, security token etc.
+- Web applications can authenticate the routes by using various state management techniques.
+- Cookies are the key components used for authentication in web applications. 
+- JavaScript cookies are managed by using "document" object.
+
+Syntax:
+	document.cookies = "name=someName; cookieValue=val";
+
+- React uses various 3rd party cookie libraries.
+
+Cookies in React App:
+
+1. Install 3rd party cookie library
+
+	> npm  install  react-cookie --save
+
+2. Cookie is a service, it requires a provider to configure at application level.
+
+     - Go to "index.js"
+     - Import  "CookieProvider"
+     - Configure for application
+
+	<CookieProvider>
+	       <App />
+	</CookieProvider>
+
+3. To configure and use cookie the react-cookie library provides a hook 
+	"useCookies()"
+
+Syntax:
+          const  [cookies, setCookie, removeCookie] = useCookies(['cookieName']);
+
+
+          cookies	: It is used to access a cookie from memory
+          setCookie	: It is used to create and configure a cookie.
+          removeCookie: It removes specified cookie from memory.
+
+Note:
+ - Cookie can be "in-memory", which is temporary cookie. [saved in browser memory]
+ - Cookie can be "persistent", which is permanent. [saved in client HDD]
+
+FAQ: How to handle dynamic navigation in React routing?
+Ans:  By using "useNavigate()" hook.
+
+Syntax:
+	let navigate = useNavigate();
+
+	navigate("/path");
+		              MERN Stack Application
+
+M	- MongoDB [Database]
+E	- Express JS [Middleware]
+R	- React [Front End]
+N	- Node JS [Server Side]
+
+			Video Library Project
+
+Modules:
+	1. Admin Module
+	2. User Module
+
+Admin Module
+- Admin can login with existing credentials provided in database.
+- Admin can handle following interactions
+	a) Add New Video into Library
+	b) Edit Video
+	c) Update Video Details
+	d) Delete Video
+	e) Add Categories for videos
+
+
+User Module
+- User can register
+- User can login
+- User can browse videos [search]
+- Save videos for watching later
+- User can like, dislike video
+- User can comment on video
+
+Technologies for Video Library Project:
+- Server Side Application		: Node JS
+- Database			: MongoDB
+- API & Middleware 			: Express JS
+- UI				: React with JS
+- Components Library		: Bootstrap, MUI
+- State Management			: Redux
+
+
+			    MongoDB
+- MongoDB is an open source, cross platform database.
+- It is non-SQL database [no-sql]
+- It supports ORM [Object Relational Mapping].
+- It is schema less [structure less]
+- It is document based.
+- It supports Ad-hoc queries.
+- It supports indexing. 
+- Data replications to mantain load. 
+
+Setup MongoDB on your PC
+- Download and Install MongoDB Community Server
+
+    https://www.mongodb.com/try/download/community
+
+- Select "MongoDB Compass" while install
+
+- MongoDB compass is a GUI tool  
+
+- Start MongoDB Server on your PC 
+
+        Run => Services.msc  
+        Programs => Services.msc => Right click on "MongoDB Server" => Start
+
+- Open MongoDB compass and connect to server using the following connection string.
+
+        mongodb://127.0.0.1:27017
+
+
+Terminology:
+
+	Oracle, MySQL..		MongoDB
+	------------------------------------------------------------------------
+	Database			Database
+	
+	Tables			Collections  [ ]
+
+	Record [Row]		Document  { }
+
+	Field			Field / Key
+
+	Joins			Embedded Documents
+
+
+
+MongoDB Shell Commands:
+
+1. To view existing databases 
+
+	> show  dbs
+
+2. To view active database 
+
+	> db
+
+3. To create a new database or to change into existing database
+
+	> use  databaseName
+	
+Ex:
+	> use videolibrary
+
+ Note: If you define a new name, it creates database.
+           If you define existing name, it starts using the database.
+           New database is displayed in list only when it have some collections.
+
+4. Adding a new collection into database  [collection is table]
+
+	> db.createCollection("newName", {options})
+	> db.createCollection("name")
+
+Options:
+       option		type		description
+       --------------------------------------------------------------------------------------------
+       autoIndexId	boolean	 	It sets a unique ID for every document.
+				ID is auto generated.       
+ 
+       max		number		It defines the maximum number of docs
+				allowed in a collection.
+
+       size		number		It defines the memory to allocate.						Size is defined in bytes.
+
+       capped	boolean		It will not allow to add new documents when
+				set to true. It can replace the old documents
+				when set to false.
+
+Default:
+	autoIndexId	: true
+	max		: varies
+	size		: varies
+	capped		: true
+
+Syntax:
+> db.createCollection("admin", { autoIndexId:true, max:10, capped:true, size:4194304})
+
+5. View Collections in database
+
+	> show collections
+
+6. To remove any collection
+
+	> db.collectionName.drop()
+	> db.users.drop()
+
+7. Insert documents into collection
+
+	a) insertOne()
+	b) insertMany()
+
+Syntax:
+       > db.collectionName.insertOne({ key:value, key:value })
+
+ - Every document is JSON. [POCO]
+ - Key is string type.
+ - Value is any JavaScript type
+ 	a) Primitive
+	b) Non Primitive
+
+Syntax:
+     > db.collectionName.insertMany([ { }, { } ])
+
+Ex:
+> db.categories.insertMany([{CategoryId:2, CategoryName:'Fashion'}, {CategoryId:3, CategoryName:'Footwear'}])
+
+8. Query Documents    
+- You can query documents from any collection using "find()"
+- find() uses a dynamic query expression defined in "{ }".
+
+Syntax:
+      > db.collectionName.find({})		// return all documents
+      > db.categories.find({})
+
+Query Operators:
+
+	{ key: value }		Exact match
+	
+	$gt			Greater than
+	$gte			Greater than or equal
+	$lt			Less than
+	$lte			Less than or equal
+	$ne			Not Equal
+	$eq			Equal
+	$or			OR ||
+	$and			AND &&
+
+Query-1: Find all documents with category jewelery
+
+	>db.products.find({category:"jewelery"})
+
+Query-2: Find all documents with price above 600
+	
+	>db.products.find({ price: {$gte:600} })
+
+Query-3:  Find all document with rating above 4.5
+
+	>db.products.find({ 'rating.rate': {$gt:4.5} })
+
+Query-4:  Find all jewelery products with price above 500
+
+ > db.products.find({ $and:[ {category:'jewelery'}, {price:{$gt:500}} ] })
+
+Query-5:  Find all products with price between 100 to 500
+
+> db.products.find({ $and: [ {price:{$gt:100}}, {price:{$lt:500} } ] } ) 
+
+Query-6: Find all products whose category is jewelery or rating is above 4.7
+
+> db.products.find({$or:[ {category:'jewelery'}, {'rating.rate':{$gt:4.7}} ]})
+
+
+9. Update Documents
+	
+	a) updateOne()
+	b) updateMany()
+
+ Update Operators
+
+	$set		: update values
+	$unset		: remove field
+	$rename		: change field name
+
+Syntax:
+        >db.collectionName.updateOne({findQuery},{updateQuery})
+
+        >db.products.updateOne({ id:3 }, { $set: { price:400, 'rating.rate':4.8 } })
+   
+        >db.products.updateMany({category:'jewelery'}, { $set:{'rating.rage': 4.8 }})
+
+10. Delete Documents
+	a) deleteOne()
+	b) deleteMany()
+
+Syntax:
+> db.collectionName.deleteOne({ findQuery })
+> db.products.deleteOne({id:3})
+> db.products.deleteMany({price:{$lt:100}})
+
+		       Server Side API
+		   [Node JS & Express ]
+
+
+			Server Side Scripting
+
+- Server side scripting is a technique used in web applications to generate a response customized to every client request.
+- Scripts are employed on server in order to generate response for client request.
+- The popular server side scripting technologies
+	CGI, JSP, ASP, PHP, Node JS etc..
+
+			 Node JS
+- It is open source and cross platform.
+- It uses google chrome V8 compiler.
+- It is JavaScript based. 
+- It is Single Threaded. 
+- It uses Async and Sync methods.
+- It is modular.
+- It will not use caching.
+- Node JS can build web application, create server, cretate CLI tools etc.
+
+1. Create a new project folder for server side programming
+
+	E:\server-app
+
+
+2. Open with VS code and add script file "index.js"
+
+
+3. Server side programs in Node use JavaScript only as language not for DOM.
+
+	- Variables
+	- Data Types
+	- Operators
+	- Statements
+	- Functions
+	- OOP
+
+   Syntax:
+	console.log("Welcome to Node JS");	// valid
+	alert("Welcome to Node";		// invalid
+
+4. You can compile and run server side node programs using node compiler
+
+	> node  index.js
+
+		             Server Side Objects
+- Every server side technologies handles interactions using various server side objects.
+
+	a) Request
+	b) Response
+	c) Cookie
+	d) Session
+	e) Application etc..
+
+- Node provides several built-in server objects
+
+	a) os
+	b) path
+	c) http
+	d) fs   etc..
+
+Syntax:
+	var os = require("os");		// os is a module 
+	os.cpus();
+	os.platform();
+	os.freemem()
+	
+		     Creating a new Web Application
+
+- Node can create server and host any application by using "http" object. 
+
+1. To create a server you have to use the method "createServer()"
+
+2. It uses a callback with "request & reponse" objects.
+
+Syntax:
+	var http = require("http");
+
+	http.createServer( (request, response) =>{ 
+
+	})
+
+     - Request object is used to request data from client, which can be query string,
+       form body etc.
+     - Response object is used to send response to client, which can be html, text,
+        json, xml, file etc.
+
+3. Server requires an application reference to start and respond.
+
+ Syntax:
+	var  app  = http.createServer();
+
+4. Application starts on specific port number using "listen()" method
+
+	app.listen(portNumber);
+
+5. Response object can send any type of content as response by using "write()"
+
+6. The content type is defined by using "writeHead()" 
+
+Syntax:
+	response.writeHead(statusCode, { 'content-type': 'MIME type' });
+	response.write(chunk);
+
+Ex:
+index.js
+
+var http = require("http");
+
+var app = http.createServer((request, response)=>{
+    response.writeHead(200, { 'content-type':'text/html' });
+    response.write("<h2>Welcome to Node Server Side Web Application</h2>");
+    response.end();
+});
+app.listen(5000);
+console.log(`Server Started : http://127.0.0.1:5000`);
+
+> node index.js
+
+- request from any browser
+	
+	http://127.0.0.1:5000  (or)    http://localhost:5000
+
+Ex: JSON type
+
+
+var http = require("http");
+
+var app = http.createServer((request, response)=>{
+    response.writeHead(200, { 'content-type':'application/json' });
+    response.write(JSON.stringify([{Name:'TV', Price:56000}, {Name:'Mobile', Price:12000.33}]));
+    response.end();
+});
+app.listen(5000);
+console.log(`Server Started : http://127.0.0.1:5000`);
+
+
+		            Connecting with MongoDB 
+		            [Node App => MongoDB]
+
+- To connect with any database from server application we need database "drivers".
+- Every database have relative drivers, which you have to install for project.
+- To install mongodb drivers
+
+	> npm  install  mongodb --save
+
+- MongoDB drivers library provides  "mongodb" module.
+- MongoDB module provides a collection of various classes.
+- "MongoClient" is a class that provides all properties and methods to connect with
+   mongodb database. 
+
+	var mongoClient = require("mongodb").MongoClient;
+
+- mongoClient object uses "connect()" to connect with database
+
+Syntax:
+  mongoClient.connect("connectionString").then((clientObj)=>{}).catch((err)=>{ })
+
+Syntax: [old]
+  mongoClient.connect("conString", function(error, clientObject){
+	if(!error) {
+
+	}
+ });
+
+- "then()" returns a client object that can communicate with database using "db()".
+
+Syntax:
+	.then(clientObj=>{
+	        var database =  clientObj.db("databaseName");
+	});
+
+- "database" reference can communicate with the collections in database.
+- It can also handle all CRUD operations on the collection.
+
+Syntax:
+	database.collection("collectionName").find()
+				          .insertOne()
+				          .deleteOne()
+				          .updateOne() etc..
+
+Ex:
+index.js
+
+var http = require("http");
+var mongoClient = require("mongodb").MongoClient;
+
+var app = http.createServer((req, res)=>{
+     res.writeHead(200, {
+         'content-type': 'application/json'
+     });
+
+     mongoClient.connect("mongodb://127.0.0.1:27017")
+     .then(clientObj=>{
+          var database = clientObj.db("videolibrary");
+          database.collection("categories").find({}).toArray().then(documents=>{
+              res.write(JSON.stringify(documents));
+              res.end();
+          })
+     })
+     .catch(error=> {
+        console.log(error);
+     })
+
+});
+app.listen(4000);
+console.log(`Server Started : http://127.0.0.1:4000`);
+
+
+> node index.js
+
+browser:   http://127.0.0.1:4000
+
+		                   Express JS
+
+- It is a web framework for "Node JS".
+- It is a middleware framework.
+- Middleware is a software framework used to handle communication in network based applications.
+- Express JS provides several built in modules to configure and create API's.
+
+Creating API with Node & Express:
+
+1. Install Express JS framework for project
+
+	> npm install express  --save
+
+2. Import express module and create a new server side API app with express.
+
+	var  express = require("express");
+
+	var app = express();
+
+	// Server side routes
+	app.get('/path', (req, res) =>{ })
+	app.post()
+	app.put()
+	app.delete()..
+
+	app.listen("port");
+
+3. API route provides a "response" object that sends any type response to client.
+   And a "request" object to fetch any type of content from client.
+
+	request.body	=> form body
+	request.params	=> route parameters
+	response.send()
+	response.end()
+
+Ex:
+api.js
+
+var express = require("express");
+var mongoClient = require("mongodb").MongoClient;
+
+var app = express();
+
+app.get('/', (req, res)=>{
+    res.send("<h2>API Home</h2>");
+});
+
+app.get("/men", (req, res)=>{
+    res.send("<h2>Mens' Fashion</h2>");
+});
+
+app.get("/categories", (req, res)=>{
+
+    mongoClient.connect("mongodb://127.0.0.1:27017")
+    .then(clientObj=>{
+        var database = clientObj.db("videolibrary");
+        database.collection("categories").find({}).toArray().then(documents=>{
+            res.send(documents);
+            res.end();
+        });
+    });
+});
+
+app.get("*", (req, res)=>{
+    res.send("Requested Path : Not Found");
+});
+
+app.listen(4000);
+console.log(`API Started : http://127.0.0.1:4000`);
+ 	
+
+			 Route Parameters
+
+- Parameters allows to query any content from server.
+- Route parameters a configured in route path.
+
+Syntax:
+	app.get("/path/:param1/:param2", (req, res)=>{
+
+	})
+
+	http://server.com/path/value1/value2
+
+- You can access route parameters by using "request" object "params" property.
+
+	req.params  = {
+		param1 : value1,
+		param2 : value2
+	}
+
+Ex:
+api.js
+
+var express = require("express");
+var mongoClient = require("mongodb").MongoClient;
+
+var app = express();
+var conStr = "mongodb://127.0.0.1:27017";
+
+app.get('/', (req, res)=>{
+    res.send("<h2>API Home</h2>");
+});
+
+app.get("/men", (req, res)=>{
+    res.send("<h2>Mens' Fashion</h2>");
+});
+
+app.get("/categories", (req, res)=>{
+
+    mongoClient.connect(conStr)
+    .then(clientObj=>{
+        var database = clientObj.db("videolibrary");
+        database.collection("categories").find({}).toArray().then(documents=>{
+            res.send(documents);
+            res.end();
+        });
+    });
+});
+
+app.get("/products/:category", (req, res)=>{
+
+     mongoClient.connect(conStr).then(clientObj=>{
+          var database = clientObj.db("videolibrary");
+
+          database.collection("products").find({category:req.params.category}).toArray().then(documents=>{
+            res.send(documents);
+            res.end();
+          });
+     });
+
+});
+
+app.get("*", (req, res)=>{
+    res.send("Requested Path : Not Found");
+});
+
+app.listen(4000);
+console.log(`API Started : http://127.0.0.1:4000`);
+
+Note: Download and install web debugger "Postman" or "Fiddler" for API requests. 
+
+POST, PUT, DELETE
+
+
+Creating API 
+- Node
+- Express
+- MongoDB
+	
+			CRUD Operations
+
+- Express is a middleware that sends data in JSON by default.
+- Data from client need to be converted into JSON.
+- Early versions of Node uses "body-parser" library.
+- Express JS latest versions provide "body-parser", which application have to use to convert the input data into JSON.
+
+Syntax:
+	app.use(express.urlencoded({ extended: true }));
+	app.use(express.json());
+
+- Converting data and inserting into database, updating or deleting can be blocked
+  at API level. You can control the actions by using "CORS" library.
+
+	> npm install cors --save
+
+	var cors = require("cors");
+
+	app.use(cors());
+
+Ex:
+api.js
+
+
+var express = require("express");
+var mongoClient = require("mongodb").MongoClient;
+var cors = require("cors");
+
+var app = express();
+
+app.use(express.urlencoded({extended:true}));
+app.use(express.json());
+app.use(cors());
+
+var conStr = "mongodb://127.0.0.1:27017";
+
+app.get('/', (req, res)=>{
+    res.send("<h2>API Home</h2>");
+});
+
+app.get("/men", (req, res)=>{
+    res.send("<h2>Mens' Fashion</h2>");
+});
+
+app.get("/categories", (req, res)=>{
+
+    mongoClient.connect(conStr)
+    .then(clientObj=>{
+        var database = clientObj.db("videolibrary");
+        database.collection("categories").find({}).toArray().then(documents=>{
+            res.send(documents);
+            res.end();
+        });
+    });
+});
+
+app.post("/add-category", (req, res)=>{
+
+     var category = {
+        CategoryId: parseInt(req.body.CategoryId),
+        CategoryName: req.body.CategoryName
+     }
+
+     mongoClient.connect(conStr).then(clientObj => {
+        var database = clientObj.db("videolibrary");
+        database.collection("categories").insertOne(category).then(()=>{
+              console.log('Category Added');
+              res.end();
+        })
+     })
+
+})
+
+app.put("/edit-category/:id", (req, res)=>{
+
+    var id = parseInt(req.params.id);
+
+    mongoClient.connect(conStr).then(clientObj=>{
+
+        var database = clientObj.db("videolibrary");
+        database.collection("categories").updateOne({CategoryId:id},{$set:{CategoryId:parseInt(req.body.CategoryId), CategoryName: req.body.CategoryName}}).then(()=>{
+            console.log(`Category Updated`);
+            res.end();
+        });
+
+    })
+
+
+})
+
+app.delete("/delete-category/:id", (req, res)=>{
+
+    mongoClient.connect(conStr).then(clientObj=>{
+
+        var database = clientObj.db("videolibrary");
+
+        database.collection('categories').deleteOne({CategoryId:parseInt(req.params.id)}).then(()=>{
+             console.log("Category Deleted");
+             res.end(); 
+        })
+
+    })
+
+})
+
+
+
+app.get("/products/:category", (req, res)=>{
+
+     mongoClient.connect(conStr).then(clientObj=>{
+          var database = clientObj.db("videolibrary");
+
+          database.collection("products").find({category:req.params.category}).toArray().then(documents=>{
+            res.send(documents);
+            res.end();
+          });
+     });
+
+});
+
+app.get("*", (req, res)=>{
+    res.send("Requested Path : Not Found");
+});
+
+app.listen(4000);
+console.log(`API Started : http://127.0.0.1:4000`);
+		             Video Library Project
+
+Database Models 
+
+1. Admin Module
+	Collection		: admin
+	Fields		: UserId		[string] [PK]	
+			  Password	[string]
+
+2. User Module
+	Collection		: users
+	Fields		: UserId		[string] [PK]
+			  UserName	[string]
+			  Password	[string]
+			  Mobile		[string]
+			  Email		[string]
+
+3. Videos Module
+	Collection		: videos
+	Fields		: VideoId		[number] [PK]
+			  Title		[string]
+			  Url		[string]
+			  Likes		[number]
+			  Dislikes		[number]
+			  Views		[number]
+			  Category	Id	[number] [FK]
+
+	Collection		: categories
+	Fields		: CategoryId	[number] [PK]
+			  CategoryName	[string] 
+
+API Routes:
+
+GET	/admin			Returns admin user details 
+
+GET	/videos			Returns all videos 
+
+GET	/categories		Returns all categories
+
+GET	/video/1			Returns specific video by id
+
+GET	/videos/java		Returns specific category videos
+
+GET	/users			Returns all users
+
+POST	/register-user		Adds new user into database
+
+POST	/add-video		Adds new video 
+
+PUT	/edit-video/1		Edits specified video and updates
+
+DELETE	/delete-video/1		Removes specified video
+
+
+Server App:
+1. Create  new folder  server-app
+
+2. Open in VS Code
+
+3. Install Following libraries
+
+   	> npm install  express   mongodb   cors  --save
+
+
+4. Add a new  JS file  "api.js"
+
+
+var mongoClient = require("mongodb").MongoClient;
+var express = require("express");
+var cors = require("cors");
+
+var conStr = "mongodb://127.0.0.1:27017";
+
+var app = express();
+
+app.use(cors());
+app.use(express.urlencoded({extended:true}));
+app.use(express.json());
+
+// Routes
+
+app.get("/admin",(req, res)=>{
+
+    mongoClient.connect(conStr).then(clientObj =>{
+
+        var database = clientObj.db("videolibrary");
+        database.collection("admin").find({}).toArray().then(documents=>{
+
+            res.send(documents);
+            res.end();
+
+        });
+    });
+});
+
+
+app.get("/videos",(req, res)=>{
+
+    mongoClient.connect(conStr).then(clientObj =>{
+
+        var database = clientObj.db("videolibrary");
+        database.collection("videos").find({}).toArray().then(documents=>{
+
+            res.send(documents);
+            res.end();
+
+        });
+    });
+});
+
+app.get("/categories",(req, res)=>{
+
+    mongoClient.connect(conStr).then(clientObj =>{
+
+        var database = clientObj.db("videolibrary");
+        database.collection("categories").find({}).toArray().then(documents=>{
+
+            res.send(documents);
+            res.end();
+
+        });
+    });
+});
+
+app.get("/users",(req, res)=>{
+
+    mongoClient.connect(conStr).then(clientObj =>{
+
+        var database = clientObj.db("videolibrary");
+        database.collection("users").find({}).toArray().then(documents=>{
+
+            res.send(documents);
+            res.end();
+
+        });
+    });
+});
+
+app.get("/video/:id",(req, res)=>{
+
+    mongoClient.connect(conStr).then(clientObj =>{
+
+        var database = clientObj.db("videolibrary");
+        database.collection("videos").find({VideoId:parseInt(req.params.id)}).toArray().then(documents=>{
+
+            res.send(documents);
+            res.end();
+
+        });
+    });
+});
+
+
+app.get("/videos/:categoryid",(req, res)=>{
+
+    mongoClient.connect(conStr).then(clientObj =>{
+
+        var database = clientObj.db("videolibrary");
+        database.collection("videos").find({CategoryId:parseInt(req.params.categoryid)}).toArray().then(documents=>{
+
+            res.send(documents);
+            res.end();
+
+        });
+    });
+});
+
+app.post("/register-user",(req, res)=>{
+
+    var user = {
+        UserId: req.body.UserId,
+        UserName: req.body.UserName,
+        Password: req.body.Password,
+        Mobile: req.body.Mobile,
+        Email: req.body.Email
+    }
+
+    mongoClient.connect(conStr).then(clientObj=>{
+
+        var database = clientObj.db("videolibrary");
+
+        database.collection("users").insertOne(user).then(()=>{
+
+                console.log('User Registered');
+                res.end();
+        });
+    });
+});
+
+
+app.post("/add-video",(req, res)=>{
+
+    var video = {
+        VideoId: parseInt(req.body.VideoId),
+        Title: req.body.Title,
+        Url: req.body.Url,
+        Likes: parseInt(req.body.Likes),
+        Dislikes: parseInt(req.body.Dislikes),
+        Views: parseInt(req.body.Views),
+        CategoryId: parseInt(req.body.CategoryId)
+    }
+
+    mongoClient.connect(conStr).then(clientObj=>{
+
+        var database = clientObj.db("videolibrary");
+
+        database.collection("videos").insertOne(video).then(()=>{
+
+                console.log('Video Added');
+                res.end();
+        });
+    });
+});
+
+
+
+app.put("/edit-video/:id",(req, res)=>{
+
+    var video = {
+        VideoId: parseInt(req.body.VideoId),
+        Title: req.body.Title,
+        Url: req.body.Url,
+        Likes: parseInt(req.body.Likes),
+        Dislikes: parseInt(req.body.Dislikes),
+        Views: parseInt(req.body.Views),
+        CategoryId: parseInt(req.body.CategoryId)
+    }
+
+    mongoClient.connect(conStr).then(clientObj=>{
+
+        var database = clientObj.db("videolibrary");
+
+        database.collection("videos").updateOne({VideoId:parseInt(req.params.id)},{$set:video}).then(()=>{
+
+                console.log('Video Updated');
+                res.end();
+        });
+    });
+});
+
+app.delete("/delete-video/:id",(req, res)=>{
+
+    
+    mongoClient.connect(conStr).then(clientObj=>{
+
+        var database = clientObj.db("videolibrary");
+
+        database.collection("videos").deleteOne({VideoId:parseInt(req.params.id)}).then(()=>{
+
+                console.log('Video Deleted');
+                res.end();
+        });
+    });
+});
+
+app.listen(5000);
+console.log(`Server Started http://127.0.0.1:5000`);
+
+Front End - React
+
+
+useCallback()
+- It can cache any function in memory.
+- Caching function is required to use it repeatedly across multiple requests.
+- Caching will save round trip.
+
+Syntax:
+	useCallback( (data)=>{ }, [ dependencies ])
+
+useMemo()
+- It can cache data in memory.
+- It saves round trip if same data is required across requests.
+
+Syntax:
+	const data =  useMemo( ()=> { }, [dependency])
+
+
+			                 Redux 
+- It is a JavaScript library for managing predictable global state.
+- Global state is at application level, which you can access use across components.
+- Redux provides a toolkit to setup and configure global state.
+- It is predictable, debggable, extensible and secured.
+
+1. Install Redux toolkit and react support for project
+
+	> npm install  @reduxjs/toolkit   react-redux   --save
+
+2. Add a slicer to your project
+ - Slicer is provided by redux toolkit 
+ - You can use "createSlice" to create a slicer.
+ - Typically slicer contains initialState and actions performed.
+ - initialState configures the data to store
+ - slicer creates a slice with actions used by reducer.
+ - slicer configure the payload [data] to save in the store.
+
+Syntax:
+
+		video-slicer.jsx
+
+     import  { createSlice  } from  "@reduxjs/toolkit";
+   
+     const  initialState = {
+                   videos : [ ],
+	  videosCount: 0
+      }
+
+     const videoSlice = createSlice({ 
+
+	name: "video",
+	initialState,
+	reducers : {
+	     addToSaveList : (state, action) {
+	           state.videos.push[action.payload];
+	           state.videosCount = state.videos.length;
+	     }
+	}
+     })
+     
+    // export the video slide and actions so that you can use in another component.
+  
+    export const  { addToSaveList } = videoSlice.actions;
+    export default videoSlice.reducer;
+
+3. Add a new store 
+	           "store.jsx"
+   - Store imports the slicer and reducer
+   - It stores the data and send using state.
+   - It identifies the actions performed and updates data into store.
+   - Create store by using "configureStore" from redux tool kit.
+  
+Syntax:
+       import  { configureStore }  from  "@reduxjs/toolkit";
+
+       export default configureStore({
+
+               reducer : {
+                     store: videoSlicer
+               }
+         })
+
+4. Go to "index.js"
+- Import store
+- Import provider from redux library
+
+      <Provider store = { store } >
+                <App />
+      </Provider>
+
+5. Go to your component to access and update store
+
+	store.getState().store; 	// { videos, videoLength }
+ 
+    Store is updated by using  useDispatch() hook or react-redux library
+
+
+Note: Install "Redux Dev Tools" for your browser
+
+
+
+			          Testing React Application
+
+- Testing is the process of verifying AS-IS and TO-BE.
+- AS-IS refers to developers design.
+- TO-BE refers to client requirements.
+
+	AS-IS === TO-BE		=> Test Pass
+	AS-IS !== TO-BE		=> Test Fail
+
+- React is a JavaScript library, which uses "JEST" as testing framework.
+- JEST provides unit-testing methods used to test every JavaScript function and Class.
+- You can test React hooks and components by using JEST.
+- Testing every component includes 3 phases
+
+	1. Arrange
+	2. Act
+	3. Assert
+
+- Arrange is the process of setting up the environment for testing a component.
+- Act is the process of defining the parameters for testing.
+- Assert is the process of exeucting the test and monitoring the results.
+- JEST provides various methods for configuring and testing
+
+	test()
+	screen
+	render()
+	expect()
+	toBe..()
+Ex:
+Client Requirements for Login:
+- Login screen must have a title "Customer Login".
+- Login screen must have a link [anchor] with text "Recover Password".
+- Recover Password link must navigate to "/recover-password" route path.
+
+1. Add a new test file for user-login component
+
+	user-login.test.js   (or)  user-login.spec.js
+
+2. Import the component that you want to test.
+
+	import  { UserLogin }  from  "./user-login";
+
+3. Import the basic test methods
+	a) render		import your component
+	b) screen		can read every UI element from component
+
+4. Write a test case for every test.
+
+Syntax:
+	test( "Case Name", ()=>{
+	
+	          render(<Component />
+
+	          expect(element_to_test).toBe..();
+
+	})
+
+  - JEST uses "data-testid" to setup reference for any UI element, so that we can access and test 
+    the element.
+
+	<h2  data-testid="title"> 
+	<img data-testid="company-logo">
+	<a  data-testid="recover-password">
+
+5. Run the test
+
+	>npm test
+
+Ex:
+import { UserLogin } from "./user-login";
+import { screen, render } from "@testing-library/react";
+
+test("Title Test", ()=>{
+
+     render(<UserLogin />);
+
+     var title = screen.getByTestId("title");
+     expect(title).toHaveTextContent("Customer Login");
+
+});
+
+test("Recover Password Link Test", ()=>{
+
+      render(<UserLogin />);
+
+      var link = screen.getByText(/Recover Password/);
+      expect(link).toBeInTheDocument();
+      expect(link).toHaveAttribute("href", "/recover-password");
+
+})
+			          React with TypeScript
+			         ------------------------------
+
+FAQ: What are the issues with JavaScript?
+- It is not strongly typed.
+- It is not implicitly strictly typed.
+- It is not an OOP language.
+- Extensibility issues.
+
+TypeScript 
+- It is an alternative for JavaScript.
+- Anders Hejlberg of Microsoft introduced typescript language.  [ C# ] 
+- It is strongly typed and strictly typed.
+- It is an OOP language.
+- It is built in typescript.
+
+Setup Environment for TypeScript
+
+1. Install typescript on your PC
+
+	C:\> npm install -g  typescript
+
+2. Check the version
+
+	C:\> tsc   -v		[typescript trans compiler]
+
+3. Create a new folder for typescript project
+
+	D:\typescript-project
+
+4. Open in Visual Studio code
+
+5. Run the command 
+
+	> tsc  -init 			 
+
+   [ It generates tsconfig.json file, which is a typescript configuration file ]
+
+6. Typescript programs are written in  ".ts" file
+
+7. Typescript programs are translated and converted into JS by using typescript compiler
+
+	> tsc   index.ts	=> It generates index.js
+
+8.  Run JavaScript file using node compiler
+
+	> node index.js
+
+			       TypeScript Language
+
+- Variables Declaration keywords are same
+	var, let, const
+- Typescript variable requires data type specification
+	
+	var  variableName:dataType = value;
+
+- Data Types are all JS types.
+	
+	var Name:string;
+	var Price:number;
+	var Stock:boolean;
+
+- TypeScript supports union of types
+
+	var  Name:string|null ;
+
+- If data type is not defined then the default is "any" type.
+
+	var Name;		// any
+
+- Typescript supports type inference, it can set data type based on the value initialized.
+
+	var Name = "TV";	// string
+	Name = 4500;	// invalid
+
+	var Name;		// any
+	Name = 10;	// valid
+	Name = "TV";	// valid
+
+- All primitive types are same as in JavaScript.
+- All manipulations of string, number are same.
+
+
+			          TypeScript Array
+- Array can be defined for same data type collection or various types.
+
+Syntax:
+	var categories:string[]  = [ ]  or new Array();
+	var values:any[] = [ ];
+
+- Array methods are same as in JS.
+- Array can have union of types, but not for initialization only for assignment.
+
+Syntax:	
+	var values:string[] | number[]  = [ ];
+
+	Initializaiton only string or number.
+	Assignment both string and number.
+	
+			
+			 Object Type
+- It is collections of key and value reference.
+- Key is string and value is any type.
+- You can set restriction for value type.
+
+Syntax:
+     var  product:{Name:string, Price:number} = {  }
+
+Ex:
+var product:{Name:string, Price:number, Rating:{rate:number, count:number}, Cities:string[]} = {
+
+    Name: "TV",
+    Price: 45000,
+    Rating: {rate:3.2, count:5000},
+    Cities: ["Delhi", "Hyd"]
+
+}
+console.log(`Name=${product.Name}`)
+
+- Every key defined for object is mandatory to implement.
+- You can't ignore or add a new key.
+- You have to define exactly the same keys configured for object.
+- You can configure optional keys [nullable keys] by using "?". [Null reference character]
+
+Syntax:
+   var product: {Name:string, Price?:number} = {  }	// price is optional
+
+Syntax: Array of objects   [ { }, { } ]
+
+   var products:{Name:string, Price:number}[] = [ ];
+
+Ex:
+var products:{Name:string, Price:number}[] = [
+    {Name: "TV", Price: 5000.44},
+    {Name: "Mobile", Price: 24000}
+]
+products.map(product=> {
+    console.log(product.Name);
+})
+
+			            Map Type
+- JavaScript map uses key as any type and value as any type.
+- TS can restrict key and value type.
+
+Syntax:
+     var data:Map<KeyType, ValueType> = new Map();
+     data.set()
+     data.get()
+
+Ex:
+      var data:Map<number, string> = new Map();
+      data.set(1, "TV");
+
+- All manipulations are same as in JS.
+
+			            Date Type
+- Typescript date type requires  "Date" interface.
+
+Syntax:
+          var now:Date = new Date();
+
+- All date manipulations are same.
+	
+			    Regular expression Type
+- TypeScript uses "RegExp" as regular expression type.
+- Expression is defined in " /   / ".
+
+
+Syntax:
+	var pattern:RegExp = /\d{10}/;
+
+- Regular expression is verified by using "match()".
+
+Ex:
+
+var pattern:RegExp  = /\+91\d{10}/;
+var mobile:string = "+919876543210";
+
+if(mobile.match(pattern)){
+    console.log("Verified");
+} else {
+    console.log("Invalid");
+}
+- Operators are same
+- Statements are same
+- Function have Type Specification
+
+
+			Type Script Functions
+- Functions in typescript are configure with return type of void as type.
+
+Syntax:
+	function Name():void
+	{
+	}
+
+	function Name():number 
+	{
+	   return  10;
+	}
+
+- Function parameter also defines the type.
+
+Syntax:
+	function Name(param:type, param:type): type
+	{
+	}
+
+Ex:
+
+function Details(id:number, Name:string, price?:number) : void{
+    console.log(`Id=${id}\nName=${Name}\nPrice=${price}`);
+}
+
+function Addition(a:number, b:number):number {
+    return a + b;
+}
+
+Addition(10, 30);
+Details(1, "TV");
+
+			         Interfaces
+TypeScript
+- Variables
+- Data Types
+- Union of Types
+- Operators
+- Statements
+- Functions
+- Array
+- Object
+- Map
+- Array of Objects
+
+			        TypeScript OOP
+1. Interface
+- Interface defines rules for component.
+- Object or Class can implement interface. [rules]
+- You can reuse or extend rules.
+
+Syntax:
+  interface  Name
+  {
+     property:dataType;
+     method():dataType|void;
+  }
+
+- You can define optional rules
+	{
+	property?:dataType
+	}
+
+- You can have readonly rules
+
+	{
+	 readonly  property:dataType;
+	}
+
+- Readonly will not allow to assign a value after initialization.
+
+Ex:
+interface IProduct
+{
+    Name:string;
+    readonly Price:number;
+    Qty:number;
+    Total():number;
+    Print():void;
+}
+interface ICategory extends IProduct
+{
+    CategoryName:string;
+}
+
+
+var product:ICategory= {
+    Name : "TV",
+    Price: 20000,
+    Qty: 2,
+    CategoryName: "Electronics",
+    Total: function(){
+        return this.Qty * this.Price;
+    },
+    Print: function(){
+        console.log(`Name=${this.Name}\nPrice=${this.Price}\nQty=${this.Qty}\nTotal=${this.Total()}\nCategory=${this.CategoryName}`);
+    }
+}
+product.Qty = 4;
+product.Price = 56000;		// invalid   price is read-only
+
+product.Print();
+
+			           TypeScript Classes
+- Class Declaration
+- Class Expression
+- Class Members
+
+Static and NonStatic members:
+- Static uses continous memory.
+- Non static uses discreet memory.
+- Static members are accessed by using class name.
+- Non static members are accessed by using "this" keyword within class and 
+  by using instance of class outside class.
+
+Ex:
+
+class Demo
+{
+    static s=0;
+    n = 0;
+    constructor(){
+        Demo.s = Demo.s + 1;
+        this.n = this.n + 1;
+    }
+    Print(){
+        console.count(`s=${Demo.s} n=${this.n}`);
+    }
+}
+let obj1 = new Demo();
+obj1.Print();
+
+let obj2 = new Demo();
+obj2.Print();
+
+let obj3 = new Demo();
+obj3.Print();
+
+Access Modifers:
+1. public
+2. private
+3. protected 
+
+- public is accessible from any location and any object
+- private is accessible only with in class.
+- protected is accessible with in class and outside class. 
+  Outside it is accessible only within derived class and by using derived class reference.
+
+Ex:
+
+class Product
+{
+    public Name:string  = "Samsung TV";
+    private Price:number = 34000.44;
+    protected Stock:boolean = true;
+}
+class Derived extends Product
+{
+     Print(){
+        let obj = new Derived();
+        obj.Stock; // protected
+     }
+}
+
+
+Create a new React project with Typescript as language:
+
+   >npx  create-react-app    app-name --template  typescript
+
+- Your component files will have extenstion  ".tsx"
+- Your index, classes and interfaces will have ".ts" 
+- Complete file system is same as in Javascript.
+- All hooks are same.
+- useState() hook is now generic type in typescript.
+
+Syntax:
+  const [categories, setCategories] = useState<string[]>([" "]);
+  const [products, setProducts] = useState<{Name:string, Price:number}[]>([ { }, { } ]);
+  const [products, setProducts] = useState<IProduct[]>([{}, {}]);
+
+	interface IProduct 
+	{
+	  Name:string;
+	  Price:number;
+	}
+
+Ex:
+1. contracts/Iproduct.ts
+
+export interface IProduct
+{
+    id:number;
+    title:string;
+    description:string;
+    image:string;
+    price:number;
+    rating: {rate:number, count:number},
+    category:string;
+}
+
+2. data-demo.tsx
+
+import { useEffect, useState } from "react";
+import { IProduct } from "../contracts/IProduct";
+import axios from "axios";
+
+export function DataDemo(){
+
+    const [categories, setCategories] = useState<string[]>([]);
+    const [products, setProducts] = useState<IProduct[]>();
+
+    function LoadCategories(){
+        axios.get('https://fakestoreapi.com/products/categories')
+        .then(response=>{
+             setCategories(response.data);
+        })
+    }
+
+    function LoadProducts(){
+        axios.get('https://fakestoreapi.com/products')
+        .then(response=>{
+             setProducts(response.data);
+        })
+    }
+
+    useEffect(()=>{
+
+        LoadCategories();
+        LoadProducts();
+        
+
+    },[])
+
+    return(
+        <div>
+            <select>
+                {
+                    categories.map(category => <option key={category}>{category}</option>)
+                }
+            </select>
+            <h3>Products</h3>
+            <ol>
+                {
+                    products?.map(product=> <li key={product.id}>{product.title}</li>)
+                }
+            </ol>
+        </div>
+    )
+}
 
